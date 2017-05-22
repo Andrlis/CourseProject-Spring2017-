@@ -83,7 +83,7 @@ void UpdateThread::run(){
     this->manager = new RequestManager(token);
     while(1){
         getUpdates();
-        sleep(10);
+        sleep(5);
     }
 }
 

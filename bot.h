@@ -11,6 +11,7 @@
 #include "requestmanager.h"
 #include "updatethread.h"
 #include "update.h"
+#include "timetable.h"
 #include "external.h"
 
 #define BOT_TOKEN "325691058:AAF9euS7KADAaSp3KUcScXIO4mLUsX28OcU"
@@ -34,6 +35,7 @@ private:
     void analyze(Update *update);
     bool isGroup(QString text);
     QMap<QString, QString> readGroups();
+    Timetable parseTimetable(QString id);
 };
 
 #endif // BOT_H

@@ -45,17 +45,24 @@ void Bot::analyze(Update *update){
     QString sendTo = QString::number(update->message.from.id);
 
     if(update->message.string == "/start"){
-        responseString = "Hello,"+update->message.from.firstname+"!";
+        responseString = "Привет,"+update->message.from.firstname+"!";
     }
     else if(update->message.string == "/timetable" ){
-        responseString = "Please, send group number.";
+        responseString = "Пожалуйста, введите номер группы.";
     }
     else if(isGroup(update->message.string)){
-        QByteArray schedule = this->netManager->getTimetable("21366");
-        responseString = "Timetable.";
+        Timetable timetable;
+        QString id;
+        id = groupsNames.value(update->message.string);
+        if(id!=NULL){
+            timetable = parseTimetable(id);
+            responseString = timetable.toString();
+        }
+        else
+            responseString = "Простите, но такой группы не существует.";
     }
     else{
-         responseString = "Sorry, I don`t understand you.";
+         responseString = "Простите, но я не могу Вас понять.";
     }
 
     netManager->postRequest(ENDPOINT_SEND_MESSAGE,
@@ -99,4 +106,56 @@ QMap<QString, QString> Bot::readGroups(){
         }
     }
     return groupMap;
+}
+
+Timetable Bot::parseTimetable(QString id){
+    Timetable timetable;
+
+    timetable.currentWeek=netManager->getWeek();
+
+    QXmlStreamReader xmlReader(netManager->getTimetable(id));
+
+    if(xmlReader.readNextStartElement()){
+        if (xmlReader.name() == "scheduleXmlModels"){
+             while(xmlReader.readNextStartElement()){
+                 if(xmlReader.name() == "scheduleModel"){
+                    DayTimetable day;
+                    while(xmlReader.readNextStartElement()){
+                        if(xmlReader.name() == "schedule"){
+                            Lesson lesson;
+                            while(xmlReader.readNextStartElement()){
+                                if(xmlReader.name() == "auditory"){
+                                    lesson.classroom=xmlReader.readElementText();
+                                }
+                                else if(xmlReader.name() == "lessonTime"){
+                                    lesson.time=xmlReader.readElementText();
+                                }
+                                else if(xmlReader.name() == "lessonType"){
+                                    lesson.lessonType=xmlReader.readElementText();
+                                }
+                                else if(xmlReader.name() == "numSubgroup"){
+                                    lesson.subGroup=xmlReader.readElementText();
+                                }
+                                else if(xmlReader.name() == "subject"){
+                                    lesson.lessonName=xmlReader.readElementText();
+                                }
+                                else if(xmlReader.name() == "weekNumber"){
+                                    lesson.weeks.append(xmlReader.readElementText());
+                                }
+                                else
+                                    xmlReader.skipCurrentElement();
+                            }
+                            day.lessons.append(lesson);
+                        }
+                        else
+                            xmlReader.skipCurrentElement();
+                        }
+                    timetable.days.append(day);
+                 }
+                 else
+                     xmlReader.skipCurrentElement();
+             }
+         }
+    }
+    return timetable;
 }

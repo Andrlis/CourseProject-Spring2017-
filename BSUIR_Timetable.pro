@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     updatethread.cpp \
     external.cpp \
     timetable.cpp \
-    daytimetable.cpp
+    daytimetable.cpp \
+    lesson.cpp
 
 HEADERS += \
     requestmanager.h \
@@ -32,4 +33,5 @@ HEADERS += \
     updatethread.h \
     external.h \
     timetable.h \
-    daytimetable.h
+    daytimetable.h \
+    lesson.h

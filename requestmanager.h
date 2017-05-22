@@ -38,6 +38,7 @@ public:
     QByteArray getRequest(QString command);
     QByteArray getTimetable(QString groupId);
     QByteArray getGroups();
+    QByteArray getWeek();
     QUrl buildUrl(QString command);
 
 

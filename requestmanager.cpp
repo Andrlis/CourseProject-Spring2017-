@@ -118,6 +118,35 @@ QByteArray RequestManager::getGroups()
        return ret;
 }
 
+QByteArray RequestManager::getWeek()
+{
+    QEventLoop loop;
+    QNetworkReply *reply;
+
+    url = QUrl();
+    url.setScheme("https");
+    url.setHost("www.bsuir.by");
+    url.setPath("/schedule/rest/currentWeek/date/16.09.2016");
+
+    request.setUrl(url);                                 // Устанавлвиваем URL в запрос
+    reply = manager->get(request);                       // Выполняем запрос
+
+    QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+       loop.exec();
+
+       if (reply->error()) {
+           qDebug() << "ERROR";
+           qDebug() << reply->errorString();
+           delete reply;
+           return QByteArray();
+       }
+
+       QByteArray ret = reply->readAll();
+       delete reply;
+       return ret;
+
+}
+
 QUrl RequestManager::buildUrl(QString command)
 {
     QUrl url = QUrl();
