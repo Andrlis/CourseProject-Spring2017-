@@ -9,6 +9,7 @@ class Lesson
 public:
     Lesson();
     QString toString();
+    QString current();
 
     QString lessonName;
     QString time;

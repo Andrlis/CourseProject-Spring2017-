@@ -35,48 +35,74 @@ void Bot::botLogic()
    }
 }
 
+/**
+ * Get groups` id and
+ * start thread, wich gets updates from telegrams server.
+ * @brief Bot::start
+ */
 void Bot::start(){
     this->groupsNames = readGroups();
     this->updateThread->start();
 }
 
+/**
+ * Analize update and send response to user
+ * @brief Bot::analyze
+ * @param update
+ */
 void Bot::analyze(Update *update){
     QString responseString;
     QString sendTo = QString::number(update->message.from.id);
 
     if(update->message.string == "/start"){
-        responseString = "Привет,"+update->message.from.firstname+"!";
+        user_Request.insert(update->message.from.id, update->message.string);
+        responseString = "Приветствую, "+update->message.from.firstname+"!";
     }
-    else if(update->message.string == "/timetable" ){
+    else if(update->message.string.contains("timetable")){
+        user_Request.insert(update->message.from.id, update->message.string);
         responseString = "Пожалуйста, введите номер группы.";
     }
     else if(isGroup(update->message.string)){
         Timetable timetable;
-        QString id;
-        id = groupsNames.value(update->message.string);
-        if(id!=NULL){
-            timetable = parseTimetable(id);
-            responseString = timetable.toString();
+        if(groupsNames.contains(update->message.string)){
+            timetable = parseTimetable(groupsNames.value(update->message.string));
+            if(user_Request.value(update->message.from.id)=="/timetable")
+                responseString = timetable.all();
+            else if(user_Request.value(update->message.from.id)=="/daytimetable")
+                responseString = timetable.dayTimetable();
+            else if(user_Request.value(update->message.from.id)=="/weektimetable")
+                responseString = timetable.weekTimetable();
         }
         else
             responseString = "Простите, но такой группы не существует.";
     }
     else{
-         responseString = "Простите, но я не могу Вас понять.";
+         responseString = "Простите, я не понимаю Вас.";
     }
 
     netManager->postRequest(ENDPOINT_SEND_MESSAGE,
                             "chat_id="+sendTo+"&text="+responseString);
 }
 
+/**
+ * Check, is message a group number.
+ * @brief Bot::isGroup
+ * @param text
+ * @return
+ */
 bool Bot::isGroup(QString text){
     for(int i=0; i<text.size(); i++){
-        if(text.at(i)<'0'||text.at(i)>'9')
+        if(text.at(i)<'0'||text.at(i)>'9'||i>5)
            return false;
     }
     return true;
 }
 
+/**
+ * Parse xml, wich contains groups` id.
+ * @brief Bot::readGroups
+ * @return
+ */
 QMap<QString, QString> Bot::readGroups(){
     QMap<QString, QString> groupMap;
     QString name;
@@ -108,6 +134,12 @@ QMap<QString, QString> Bot::readGroups(){
     return groupMap;
 }
 
+/**
+ * Parse xml, wich contains timetable.
+ * @brief Bot::parseTimetable
+ * @param id
+ * @return
+ */
 Timetable Bot::parseTimetable(QString id){
     Timetable timetable;
 

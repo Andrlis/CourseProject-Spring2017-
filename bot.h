@@ -30,12 +30,13 @@ private:
     QList<Update> updateList;
     UpdateThread *updateThread;
     QMap<QString, QString> groupsNames;
+    QMap<quint32, QString> user_Request;
     int updatesCount = 0;
 
     void analyze(Update *update);
     bool isGroup(QString text);
     QMap<QString, QString> readGroups();
-    Timetable parseTimetable(QString id);
+    Timetable parseTimetable(QString id);    
 };
 
 #endif // BOT_H

@@ -23,3 +23,12 @@ QString Lesson::toString(){
     string+="\n";
     return string;
 }
+
+QString Lesson::current(){
+    QString string;
+    string = "%E2%9D%97"+time+"-"+lessonName+"("+lessonType+")-"+classroom;
+    if(subGroup!="0")
+        string+="-"+subGroup+"подгр.";
+    string+="\n";
+    return string;
+}

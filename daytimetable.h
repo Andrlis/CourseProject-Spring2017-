@@ -8,8 +8,8 @@
 class DayTimetable
 {
 public:
-    DayTimetable();
     QString toString();
+    QString current(QString week);
 
     QString day;
     QList<Lesson> lessons;
