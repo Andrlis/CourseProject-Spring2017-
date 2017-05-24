@@ -4,7 +4,6 @@ RequestManager::RequestManager(QString token, QObject *parent) : QObject(parent)
 {
     // Инициализируем менеджер
     this->manager = new QNetworkAccessManager();
-
     this->token=token;
 }
 

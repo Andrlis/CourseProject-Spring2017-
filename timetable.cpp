@@ -4,6 +4,11 @@ Timetable::Timetable(){
     date=QDate::currentDate();
 }
 
+/**
+ * Return all timetable
+ * @brief Timetable::all
+ * @return
+ */
 QString Timetable::all(){
     QString string;
     string+="Текущая неделя: "+currentWeek+"\n";
@@ -14,6 +19,11 @@ QString Timetable::all(){
     return string;
 }
 
+/**
+ * Return current day timetable.
+ * @brief Timetable::dayTimetable
+ * @return
+ */
 QString Timetable::dayTimetable(){
     QString string;
     int day = date.dayOfWeek();
@@ -24,6 +34,11 @@ QString Timetable::dayTimetable(){
     return string;
 }
 
+/**
+ * Return current week timetable.
+ * @brief Timetable::weekTimetable
+ * @return
+ */
 QString Timetable::weekTimetable(){
     QString string;
     string+="Текущая неделя: "+currentWeek+"\n";

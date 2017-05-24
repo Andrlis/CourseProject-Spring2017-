@@ -61,6 +61,12 @@ QJsonObject UpdateThread::jsonObjectFromByteArray(QByteArray json)
     return obj.value("result").toObject();
 }
 
+/**
+ * Parse server`s response from json.
+ * @brief UpdateThread::jsonObjectFromByteArray
+ * @param json
+ * @return
+ */
 QJsonArray UpdateThread::jsonArrayFromByteArray(QByteArray json)
 {
     QJsonDocument d = QJsonDocument::fromJson(json);
@@ -79,6 +85,10 @@ QJsonArray UpdateThread::jsonArrayFromByteArray(QByteArray json)
     return obj.value("result").toArray();
 }
 
+/**
+ * Thread function.
+ * @brief UpdateThread::run
+ */
 void UpdateThread::run(){
     this->manager = new RequestManager(token);
     while(1){

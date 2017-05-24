@@ -1,5 +1,10 @@
 #include "daytimetable.h"
 
+/**
+ * Return all lessons.
+ * @brief DayTimetable::toString
+ * @return
+ */
 QString DayTimetable::toString(){
     QString string;
     for(int i=0; i<lessons.size();i++){
@@ -9,6 +14,12 @@ QString DayTimetable::toString(){
     return string;
 }
 
+/**
+ * Return current day lessons
+ * @brief DayTimetable::current
+ * @param week
+ * @return
+ */
 QString DayTimetable::current(QString week){
     QString string;
     for(int i=0; i<lessons.size();i++){

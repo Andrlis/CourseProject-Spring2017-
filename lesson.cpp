@@ -8,6 +8,11 @@ Lesson::Lesson()
     classroom="";
 }
 
+/**
+ * @brief Return all information about lesson.
+ * @brief Lesson::toString
+ * @return
+ */
 QString Lesson::toString(){
     QString string;
     string = "%E2%9D%97"+time+"-"+lessonName+"("+lessonType+")-"+classroom;
@@ -24,6 +29,11 @@ QString Lesson::toString(){
     return string;
 }
 
+/**
+ * @brief Return current week lesson.
+ * @brief Lesson::current
+ * @return
+ */
 QString Lesson::current(){
     QString string;
     string = "%E2%9D%97"+time+"-"+lessonName+"("+lessonType+")-"+classroom;

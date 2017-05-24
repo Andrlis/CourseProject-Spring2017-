@@ -7,12 +7,14 @@
 #include <QMutex>
 #include <QWaitCondition>
 #include <QXmlStreamReader>
+#include <QCoreApplication>
 
 #include "requestmanager.h"
 #include "updatethread.h"
 #include "update.h"
 #include "timetable.h"
 #include "external.h"
+#include "mysql_db.h"
 
 #define BOT_TOKEN "325691058:AAF9euS7KADAaSp3KUcScXIO4mLUsX28OcU"
 
@@ -29,6 +31,7 @@ private:
     RequestManager *netManager;
     QList<Update> updateList;
     UpdateThread *updateThread;
+    MySQL_DB sqlDB;
     QMap<QString, QString> groupsNames;
     QMap<quint32, QString> user_Request;
     int updatesCount = 0;
@@ -36,7 +39,7 @@ private:
     void analyze(Update *update);
     bool isGroup(QString text);
     QMap<QString, QString> readGroups();
-    Timetable parseTimetable(QString id);    
+    Timetable parseTimetable(QString id);
 };
 
 #endif // BOT_H

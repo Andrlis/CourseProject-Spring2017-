@@ -43,6 +43,7 @@ void Bot::botLogic()
 void Bot::start(){
     this->groupsNames = readGroups();
     this->updateThread->start();
+    sqlDB.connect();
 }
 
 /**

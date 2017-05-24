@@ -1,6 +1,7 @@
 QT += core
 QT -= gui
 QT += network
+QT += sql
 
 CONFIG += c++11
 
@@ -21,7 +22,8 @@ SOURCES += main.cpp \
     external.cpp \
     timetable.cpp \
     daytimetable.cpp \
-    lesson.cpp
+    lesson.cpp \
+    mysql_db.cpp
 
 HEADERS += \
     requestmanager.h \
@@ -34,4 +36,5 @@ HEADERS += \
     external.h \
     timetable.h \
     daytimetable.h \
-    lesson.h
+    lesson.h \
+    mysql_db.h
