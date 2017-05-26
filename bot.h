@@ -16,7 +16,7 @@
 #include "external.h"
 #include "mysql_db.h"
 
-#define BOT_TOKEN "325691058:AAF9euS7KADAaSp3KUcScXIO4mLUsX28OcU"
+#define BOT_TOKEN "<token>"
 
 class Bot: public QObject
 {

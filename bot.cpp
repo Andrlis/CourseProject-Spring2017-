@@ -52,33 +52,73 @@ void Bot::start(){
  * @param update
  */
 void Bot::analyze(Update *update){
-    QString responseString;
+    QString responseString= "Простите, я не понимаю Вас.";
     QString sendTo = QString::number(update->message.from.id);
+
+    if(user_Request.value(update->message.from.id)=="/addnote"){
+        sqlDB.addNote(update->message.string, update->message.from.id);
+        responseString = "Заметка добавлена.";
+        user_Request.insert(update->message.from.id,"");
+    }
+
+    if(user_Request.value(update->message.from.id)=="/deletenote"){
+        QList<Note> notes = sqlDB.getNotes(update->message.from.id);
+        sqlDB.deleteNote(notes.at(update->message.string.toInt()-1).note_id);
+        responseString = "Заметка удалена.";
+        user_Request.insert(update->message.from.id,"");
+    }
+
+    if(user_Request.value(update->message.from.id).contains("timetable")){
+        if(isGroup(update->message.string)){
+            Timetable timetable;
+            if(groupsNames.contains(update->message.string)){
+                timetable = parseTimetable(groupsNames.value(update->message.string));
+                if(user_Request.value(update->message.from.id)=="/timetable")
+                    responseString = timetable.all();
+                else if(user_Request.value(update->message.from.id)=="/daytimetable")
+                    responseString = timetable.dayTimetable();
+                else if(user_Request.value(update->message.from.id)=="/weektimetable")
+                    responseString = timetable.weekTimetable();
+            }
+        }
+        else
+            responseString = "Простите, но такой группы не существует.";
+        user_Request.insert(update->message.from.id,"");
+    }
+
 
     if(update->message.string == "/start"){
         user_Request.insert(update->message.from.id, update->message.string);
         responseString = "Приветствую, "+update->message.from.firstname+"!";
     }
+
     else if(update->message.string.contains("timetable")){
         user_Request.insert(update->message.from.id, update->message.string);
         responseString = "Пожалуйста, введите номер группы.";
     }
-    else if(isGroup(update->message.string)){
-        Timetable timetable;
-        if(groupsNames.contains(update->message.string)){
-            timetable = parseTimetable(groupsNames.value(update->message.string));
-            if(user_Request.value(update->message.from.id)=="/timetable")
-                responseString = timetable.all();
-            else if(user_Request.value(update->message.from.id)=="/daytimetable")
-                responseString = timetable.dayTimetable();
-            else if(user_Request.value(update->message.from.id)=="/weektimetable")
-                responseString = timetable.weekTimetable();
-        }
-        else
-            responseString = "Простите, но такой группы не существует.";
+
+    else if(update->message.string=="/addnote"){
+        user_Request.insert(update->message.from.id, update->message.string);
+        responseString = "Введите текст заметки.";
     }
-    else{
-         responseString = "Простите, я не понимаю Вас.";
+
+    else if(update->message.string=="/getnotes"){
+        user_Request.insert(update->message.from.id, update->message.string);
+        QList<Note> notesList = sqlDB.getNotes(update->message.from.id);
+        if(notesList.isEmpty())
+            responseString = "У Вас нет заметок.";
+        else{
+            responseString = "Ваши заметки:\n";
+            for(int i=0; i<notesList.size();i++){
+                responseString+="#"+QString::number(i+1)+'\n';
+                responseString+=notesList.at(i).noteText+"\n\n";
+            }
+        }
+    }
+
+    else if(update->message.string=="/deletenote"){
+        user_Request.insert(update->message.from.id, update->message.string);
+        responseString = "Введите номер удаляемой заметки.";
     }
 
     netManager->postRequest(ENDPOINT_SEND_MESSAGE,
@@ -179,6 +219,9 @@ Timetable Bot::parseTimetable(QString id){
                                     xmlReader.skipCurrentElement();
                             }
                             day.lessons.append(lesson);
+                        }
+                        else if(xmlReader.name() == "weekDay"){
+                            day.day = xmlReader.readElementText();
                         }
                         else
                             xmlReader.skipCurrentElement();

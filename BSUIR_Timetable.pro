@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     timetable.cpp \
     daytimetable.cpp \
     lesson.cpp \
-    mysql_db.cpp
+    mysql_db.cpp \
+    note.cpp
 
 HEADERS += \
     requestmanager.h \
@@ -37,4 +38,5 @@ HEADERS += \
     timetable.h \
     daytimetable.h \
     lesson.h \
-    mysql_db.h
+    mysql_db.h \
+    note.h

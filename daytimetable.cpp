@@ -7,6 +7,7 @@
  */
 QString DayTimetable::toString(){
     QString string;
+    string+=day+'\n';
     for(int i=0; i<lessons.size();i++){
         string+=lessons[i].toString();
     }
@@ -22,6 +23,7 @@ QString DayTimetable::toString(){
  */
 QString DayTimetable::current(QString week){
     QString string;
+    string+=day+'\n';
     for(int i=0; i<lessons.size();i++){
         if(lessons[i].weeks.contains(week))
             string+=lessons[i].current();
